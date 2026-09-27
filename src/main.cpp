@@ -46,15 +46,15 @@ int main () {
     while (WindowShouldClose() == false){
 
         if (IsKeyDown(KEY_W)) {
-            newball.update_ball_radius(1);
+            
         }
         if (IsKeyDown(KEY_S)) {
-            newball.update_ball_radius(-1);
+            
         }
 
         BeginDrawing();
             ClearBackground(BLACK);
-            DrawCircle(ball_x,ball_y,ball_radius, WHITE);
+        
         EndDrawing();
     }
 
