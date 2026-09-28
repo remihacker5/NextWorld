@@ -28,12 +28,14 @@ class player {
     private:
         string name = "Kara1";
         string UID = "";
-        Texture2D skin = LoadTexture("resources/images/player/Kara/Kara.png");
-        
+        Texture2D skin = LoadTexture("resources/images/player/Kara/Kara-walk.png");
+        int anim_frame = 0;
+        Rectangle skinframe = { 0.0f, 0.0f, (float)skin.width/4, (float)skin.height };
         float location_x = 100;
         float location_y = 100;
         int move_speed_x = 5;
         int move_speed_y = 5;
+        int player_scale = 5;
 
         // LOCATION GETTER AND SETTER
         int get_location_x () {
@@ -67,7 +69,26 @@ class player {
             }
             if (direction_x < 0) {
                 // Play the walking animation for the player character to the left
-                skin = LoadTexture("resources/images/player/Kara/Kara_walk_left.png");
+                static int frames = 0;
+                frames++;
+
+                if (anim_frame == 0 && frames == 10){
+                    frames = 0;
+                    anim_frame = 1;
+                } 
+                else if (anim_frame == 1 && frames == 10){
+                    frames = 0;
+                    anim_frame = 2;
+                }
+                else if (anim_frame == 2 && frames == 10){
+                    frames = 0;
+                    anim_frame = 3;
+                }
+                else if (anim_frame == 3 && frames == 10){
+                    frames = 0;
+                    anim_frame = 0;
+                }
+                
             }
             if (direction_y > 0) {
                 // Play the walking animation for the player character downwards
@@ -105,7 +126,7 @@ class player {
             }
             if (direction_x < 0) {
                 // Play the walking animation for the player character to the left
-
+                play_walking_animation(direction_x, direction_y);
             }
             if (direction_y > 0) {
                 // Play the walking animation for the player character downwards
@@ -120,7 +141,8 @@ class player {
 
     // Draw the player character based on their skin and location
         void draw_player(){
-            DrawTextureEx(skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
+            // DrawTextureEx(skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
+            DrawTexturePro(skin, { (float)skin.width/4*anim_frame, 0.0f, (float)skin.width/4, (float)skin.height }, Rectangle { location_x, location_y, (float)skin.width/4*player_scale, (float)skin.height*player_scale }, Vector2 {0, 0}, 0, WHITE);
         }
 };
 
@@ -130,6 +152,7 @@ int main () {
 
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
+    int framesCounter = 0;
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "NextWorld - PreAlpha 1");
     SetTargetFPS(60);
     log("Screen init SUCCESS");
@@ -151,6 +174,7 @@ int main () {
 
 
     while (WindowShouldClose() == false){
+        framesCounter++;
         local_player.draw_player();
 
         if (IsKeyDown(KEY_W)) {
