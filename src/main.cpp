@@ -20,7 +20,7 @@
 using namespace std;
 
 void log(string msg){
-    cout << "[GAME LOG] - " + msg << endl;
+    //cout << "[GAME LOG] - " + msg << endl;
 }
 
 
@@ -30,13 +30,12 @@ class player {
         string UID = "";
         Texture2D skin = LoadTexture("resources/images/player/Remi/Remi-walk.png");
         int anim_frame = 0;
-        Rectangle skinframe = { 0.0f, 0.0f, (float)skin.width/4, (float)skin.height };
         int facing = -1;
         float location_x = 100;
         float location_y = 100;
         int move_speed_x = 5;
         int move_speed_y = 5;
-        int player_scale = 5;
+        int player_scale = 10;
 
         // LOCATION GETTER AND SETTER
         int get_location_x () {
@@ -65,30 +64,8 @@ class player {
         }
          
         void play_walking_animation(int direction_x, int direction_y) {
-            if (direction_x > 0) {
+            
                 // Play the walking animation for the player character to the right
-                                static int frames = 0;
-                frames++;
-
-                if (anim_frame == 0 && frames == 10){
-                    frames = 0;
-                    anim_frame = 1;
-                } 
-                else if (anim_frame == 1 && frames == 10){
-                    frames = 0;
-                    anim_frame = 2;
-                }
-                else if (anim_frame == 2 && frames == 10){
-                    frames = 0;
-                    anim_frame = 3;
-                }
-                else if (anim_frame == 3 && frames == 10){
-                    frames = 0;
-                    anim_frame = 0;
-                }
-            }
-            if (direction_x < 0) {
-                // Play the walking animation for the player character to the left
                 static int frames = 0;
                 frames++;
 
@@ -108,52 +85,6 @@ class player {
                     frames = 0;
                     anim_frame = 0;
                 }
-                
-            }
-            if (direction_y > 0) {
-                // Play the walking animation for the player character downwards
-                                static int frames = 0;
-                frames++;
-
-                if (anim_frame == 0 && frames == 10){
-                    frames = 0;
-                    anim_frame = 1;
-                } 
-                else if (anim_frame == 1 && frames == 10){
-                    frames = 0;
-                    anim_frame = 2;
-                }
-                else if (anim_frame == 2 && frames == 10){
-                    frames = 0;
-                    anim_frame = 3;
-                }
-                else if (anim_frame == 3 && frames == 10){
-                    frames = 0;
-                    anim_frame = 0;
-                }
-            }
-            if (direction_y < 0) {
-                // Play the walking animation for the player character upwards
-                                static int frames = 0;
-                frames++;
-
-                if (anim_frame == 0 && frames == 10){
-                    frames = 0;
-                    anim_frame = 1;
-                } 
-                else if (anim_frame == 1 && frames == 10){
-                    frames = 0;
-                    anim_frame = 2;
-                }
-                else if (anim_frame == 2 && frames == 10){
-                    frames = 0;
-                    anim_frame = 3;
-                }
-                else if (anim_frame == 3 && frames == 10){
-                    frames = 0;
-                    anim_frame = 0;
-                }
-            }
         }
 
     public:
@@ -208,7 +139,6 @@ class player {
 
     // Draw the player character based on their skin and location
         void draw_player(){
-            // DrawTextureEx(skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
             DrawTexturePro(skin, { (float)skin.width/4*anim_frame, 0.0f, (float)skin.width/4 * facing, (float)skin.height }, Rectangle { location_x, location_y, (float)skin.width/4*player_scale, (float)skin.height*player_scale }, Vector2 {0, 0}, 0, WHITE);
         }
 };
@@ -261,7 +191,7 @@ int main () {
 
 
         BeginDrawing();
-            ClearBackground(BLACK);
+            ClearBackground(BLUE);
         
         EndDrawing();
     }
