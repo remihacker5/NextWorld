@@ -28,9 +28,10 @@ class player {
     private:
         string name = "Kara1";
         string UID = "";
-        Texture2D skin = LoadTexture("resources/images/player/Kara/Kara-walk.png");
+        Texture2D skin = LoadTexture("resources/images/player/Remi/Remi-walk.png");
         int anim_frame = 0;
         Rectangle skinframe = { 0.0f, 0.0f, (float)skin.width/4, (float)skin.height };
+        int facing = -1;
         float location_x = 100;
         float location_y = 100;
         int move_speed_x = 5;
@@ -66,6 +67,25 @@ class player {
         void play_walking_animation(int direction_x, int direction_y) {
             if (direction_x > 0) {
                 // Play the walking animation for the player character to the right
+                                static int frames = 0;
+                frames++;
+
+                if (anim_frame == 0 && frames == 10){
+                    frames = 0;
+                    anim_frame = 1;
+                } 
+                else if (anim_frame == 1 && frames == 10){
+                    frames = 0;
+                    anim_frame = 2;
+                }
+                else if (anim_frame == 2 && frames == 10){
+                    frames = 0;
+                    anim_frame = 3;
+                }
+                else if (anim_frame == 3 && frames == 10){
+                    frames = 0;
+                    anim_frame = 0;
+                }
             }
             if (direction_x < 0) {
                 // Play the walking animation for the player character to the left
@@ -92,9 +112,47 @@ class player {
             }
             if (direction_y > 0) {
                 // Play the walking animation for the player character downwards
+                                static int frames = 0;
+                frames++;
+
+                if (anim_frame == 0 && frames == 10){
+                    frames = 0;
+                    anim_frame = 1;
+                } 
+                else if (anim_frame == 1 && frames == 10){
+                    frames = 0;
+                    anim_frame = 2;
+                }
+                else if (anim_frame == 2 && frames == 10){
+                    frames = 0;
+                    anim_frame = 3;
+                }
+                else if (anim_frame == 3 && frames == 10){
+                    frames = 0;
+                    anim_frame = 0;
+                }
             }
             if (direction_y < 0) {
                 // Play the walking animation for the player character upwards
+                                static int frames = 0;
+                frames++;
+
+                if (anim_frame == 0 && frames == 10){
+                    frames = 0;
+                    anim_frame = 1;
+                } 
+                else if (anim_frame == 1 && frames == 10){
+                    frames = 0;
+                    anim_frame = 2;
+                }
+                else if (anim_frame == 2 && frames == 10){
+                    frames = 0;
+                    anim_frame = 3;
+                }
+                else if (anim_frame == 3 && frames == 10){
+                    frames = 0;
+                    anim_frame = 0;
+                }
             }
         }
 
@@ -123,16 +181,25 @@ class player {
             
             if (direction_x > 0) {
                 // Play the walking animation for the player character to the right
+                facing = 1;
+                play_walking_animation(direction_x, direction_y);
             }
             if (direction_x < 0) {
                 // Play the walking animation for the player character to the left
+                facing = -1;
                 play_walking_animation(direction_x, direction_y);
             }
             if (direction_y > 0) {
                 // Play the walking animation for the player character downwards
+                play_walking_animation(direction_x, direction_y);
             }
             if (direction_y < 0) {
                 // Play the walking animation for the player character upwards
+                play_walking_animation(direction_x, direction_y);
+            }
+            if (direction_x == 0 && direction_y == 0){
+                anim_frame = 0;
+                return;
             }
             location_x += direction_x * move_speed_x;
             location_y += direction_y * move_speed_y;
@@ -142,7 +209,7 @@ class player {
     // Draw the player character based on their skin and location
         void draw_player(){
             // DrawTextureEx(skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
-            DrawTexturePro(skin, { (float)skin.width/4*anim_frame, 0.0f, (float)skin.width/4, (float)skin.height }, Rectangle { location_x, location_y, (float)skin.width/4*player_scale, (float)skin.height*player_scale }, Vector2 {0, 0}, 0, WHITE);
+            DrawTexturePro(skin, { (float)skin.width/4*anim_frame, 0.0f, (float)skin.width/4 * facing, (float)skin.height }, Rectangle { location_x, location_y, (float)skin.width/4*player_scale, (float)skin.height*player_scale }, Vector2 {0, 0}, 0, WHITE);
         }
 };
 
@@ -188,6 +255,8 @@ int main () {
         }
         if (IsKeyDown(KEY_D)) {
             local_player.walk(1, 0);
+        } if (!IsKeyDown(KEY_W) && !IsKeyDown(KEY_A) && !IsKeyDown(KEY_S) && !IsKeyDown(KEY_D)) {
+            local_player.walk(0, 0);
         }
 
 
