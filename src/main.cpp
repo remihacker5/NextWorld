@@ -26,38 +26,16 @@ void log(string msg){
 
 class player {
     private:
-        string name = "";
+        string name = "Kara1";
         string UID = "";
-        string skin = "";
-        int location_x = 100;
-        int location_y = 100;
+        Texture2D skin = LoadTexture("resources/images/player/Kara/Kara.png");
+        
+        float location_x = 100;
+        float location_y = 100;
         int move_speed_x = 5;
         int move_speed_y = 5;
-        Texture2D Remi_skin = LoadTexture("resources/images/player/Remi/Remi.png"); 
-        Texture2D Kara_skin = LoadTexture("resources/images/player/Kara/Kara.png"); 
 
-    public:
-    // NAME GETTER AND SETTER
-        string get_name () {
-            return name;
-        }
-
-        void set_name (string newname) {
-            name = newname;
-            return;
-        }
-
-    // SKIN GETTER AND SETTER
-        string get_skin () {
-            return skin;
-        }
-
-        void set_skin (string newskin) {
-            skin = newskin;
-            return;
-        }
-
-    // LOCATION GETTER AND SETTER
+        // LOCATION GETTER AND SETTER
         int get_location_x () {
             return location_x;
         }
@@ -75,24 +53,74 @@ class player {
             return;
         }
 
-    // MOVE SPEED GETTER AND SETTER
+        // MOVE SPEED GETTER AND SETTER
         int get_move_speed_x () {
             return move_speed_x;
         }
         int get_move_speed_y () {
             return move_speed_y;
         }
+         
+        void play_walking_animation(int direction_x, int direction_y) {
+            if (direction_x > 0) {
+                // Play the walking animation for the player character to the right
+            }
+            if (direction_x < 0) {
+                // Play the walking animation for the player character to the left
+                skin = LoadTexture("resources/images/player/Kara/Kara_walk_left.png");
+            }
+            if (direction_y > 0) {
+                // Play the walking animation for the player character downwards
+            }
+            if (direction_y < 0) {
+                // Play the walking animation for the player character upwards
+            }
+        }
 
+    public:
+    // NAME GETTER AND SETTER
+        string get_name () {
+            return name;
+        }
+
+        void set_name (string newname) {
+            name = newname;
+            return;
+        }
+
+    // SKIN GETTER AND SETTER
+        Texture2D get_skin () {
+            return skin;
+        }
+
+        void set_skin (Texture2D newskin) {
+            skin = newskin;
+            return;
+        }
+
+        void walk(int direction_x, int direction_y) {
+            
+            if (direction_x > 0) {
+                // Play the walking animation for the player character to the right
+            }
+            if (direction_x < 0) {
+                // Play the walking animation for the player character to the left
+
+            }
+            if (direction_y > 0) {
+                // Play the walking animation for the player character downwards
+            }
+            if (direction_y < 0) {
+                // Play the walking animation for the player character upwards
+            }
+            location_x += direction_x * move_speed_x;
+            location_y += direction_y * move_speed_y;
+
+        }
 
     // Draw the player character based on their skin and location
         void draw_player(){
-            if (skin == "Remi") {
-                DrawTextureEx(Remi_skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
-            } 
-            else if (skin == "Kara") {
-                // Draw Kara skin here
-                DrawTextureEx(Kara_skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
-            }
+            DrawTextureEx(skin, Vector2 {location_x, location_y}, 0.0, 5, WHITE);
         }
 };
 
@@ -100,14 +128,16 @@ class player {
 
 int main () {
 
-
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "NextWorld - PreAlpha 1");
     SetTargetFPS(60);
     log("Screen init SUCCESS");
-    
     player local_player = player();
+
+    /*
+    This is where you would initialize the local player's name and skin.
+
     cout << "Please Enter your characters name: ";
     string newname;
     cin >> newname;
@@ -117,23 +147,23 @@ int main () {
     string newskin;
     cin >> newskin;
     local_player.set_skin(newskin);
-
+    */
 
 
     while (WindowShouldClose() == false){
         local_player.draw_player();
 
         if (IsKeyDown(KEY_W)) {
-            
+            local_player.walk(0, -1);
         }
         if (IsKeyDown(KEY_A)) {
-            
+            local_player.walk(-1, 0);
         }
         if (IsKeyDown(KEY_S)) {
-            
+            local_player.walk(0, 1);
         }
         if (IsKeyDown(KEY_D)) {
-            
+            local_player.walk(1, 0);
         }
 
 
