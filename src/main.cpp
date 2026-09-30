@@ -20,22 +20,61 @@
 using namespace std;
 
 void log(string msg){
-    //cout << "[GAME LOG] - " + msg << endl;
+    cout << "[GAME LOG] - " + msg << endl;
 }
+
+
+class world {
+    private:
+        string name = "Earth";
+        Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
+        int tile_scale = 5;
+        string world_map = LoadFileText("resources/world/local_world.nxw");
+        
+        
+
+    public:
+    
+    void draw_world(){
+        float location_x = 0;
+        float location_y = 0;
+        DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { location_x, location_y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+        for (size_t i = 0; i < world_map.length(); ++i) {
+            if (world_map[i] == '#'){
+                location_x += grass1.width * tile_scale;
+                DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { location_x, location_y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            }
+            if (world_map[i] == '$'){
+                location_x += grass1.width * tile_scale;
+                DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { location_x, location_y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, YELLOW);
+            }
+            if (world_map[i] == '\n'){
+            location_x = 0;
+            location_y += grass1.height * tile_scale;
+            }
+            if (world_map[i] == ' '){
+            location_x += grass1.width * tile_scale;
+            }
+            
+        }
+        
+    }
+
+};
 
 
 class player {
     private:
         string name = "Kara1";
         string UID = "";
-        Texture2D skin = LoadTexture("resources/images/player/Remi/Remi-walk.png");
+        Texture2D skin = LoadTexture("resources/images/player/Kara/Kara-walk.png");
         int anim_frame = 0;
         int facing = -1;
         float location_x = 100;
         float location_y = 100;
         int move_speed_x = 5;
         int move_speed_y = 5;
-        int player_scale = 10;
+        int player_scale = 5;
 
         // LOCATION GETTER AND SETTER
         int get_location_x () {
@@ -153,6 +192,7 @@ int main () {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "NextWorld - PreAlpha 1");
     SetTargetFPS(60);
     log("Screen init SUCCESS");
+    world local_world = world();
     player local_player = player();
 
     /*
@@ -172,6 +212,7 @@ int main () {
 
     while (WindowShouldClose() == false){
         framesCounter++;
+        local_world.draw_world();
         local_player.draw_player();
 
         if (IsKeyDown(KEY_W)) {
