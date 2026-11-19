@@ -24,9 +24,8 @@
 .PHONY: all clean
 
 # Define required raylib variables
-PROJECT_NAME       ?= game
+PROJECT_NAME       ?= NextWorld
 RAYLIB_VERSION     ?= 5.0.0
-RAYLIB_PATH        ?= ..\..
 
 # Define compiler path on Windows
 COMPILER_PATH      ?= C:/raylib/w64devkit/bin
@@ -55,6 +54,12 @@ RAYLIB_LIBTYPE        ?= STATIC
 # Build mode for project: DEBUG or RELEASE
 BUILD_MODE            ?= RELEASE
 
+ifeq ($(BUILD_MODE),DEBUG)
+    OUTPUT_NAME ?= $(PROJECT_NAME)-debug
+else
+    OUTPUT_NAME ?= $(PROJECT_NAME)
+endif
+
 # Use external GLFW library instead of rglfw module
 # TODO: Review usage on Linux. Target version of choice. Switch on -lglfw or -lglfw3
 USE_EXTERNAL_GLFW     ?= FALSE
@@ -69,11 +74,13 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     # ifeq ($(UNAME),Msys) -> Windows
     ifeq ($(OS),Windows_NT)
         PLATFORM_OS=WINDOWS
+        RAYLIB_PATH ?= C:/raylib/raylib
         export PATH := $(COMPILER_PATH):$(PATH)
     else
         UNAMEOS=$(shell uname)
         ifeq ($(UNAMEOS),Linux)
             PLATFORM_OS=LINUX
+            RAYLIB_PATH ?= /usr
         endif
         ifeq ($(UNAMEOS),FreeBSD)
             PLATFORM_OS=BSD
@@ -89,6 +96,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
         endif
         ifeq ($(UNAMEOS),Darwin)
             PLATFORM_OS=OSX
+            RAYLIB_PATH ?= /opt/homebrew
         endif
     endif
 endif
@@ -99,15 +107,6 @@ ifeq ($(PLATFORM),PLATFORM_RPI)
     endif
 endif
 
-# RAYLIB_PATH adjustment for different platforms.
-# If using GNU make, we can get the full path to the top of the tree. Windows? BSD?
-# Required for ldconfig or other tools that do not perform path expansion.
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),LINUX)
-        RAYLIB_PREFIX ?= ..
-        RAYLIB_PATH    = $(realpath $(RAYLIB_PREFIX))
-    endif
-endif
 # Default path for raylib on Raspberry Pi, if installed in different path, update it!
 # This is not currently used by src/Makefile. Not sure of its origin or usage. Refer to wiki.
 # TODO: update install: target in src/Makefile for RPI, consider relation to LINUX.
@@ -206,6 +205,7 @@ endif
 #CFLAGS += -Wextra -Wmissing-prototypes -Wstrict-prototypes
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),WINDOWS)
+        EXT = .exe
         # resource file contains windows executable icon and properties
         # -Wl,--subsystem,windows hides the console window
         CFLAGS += $(RAYLIB_PATH)/src/raylib.rc.data
@@ -270,7 +270,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),LINUX)
         # Reset everything.
         # Precedence: immediately local, installed version, raysan5 provided libs -I$(RAYLIB_H_INSTALL_PATH) -I$(RAYLIB_PATH)/release/include
-        INCLUDE_PATHS = -I$(RAYLIB_H_INSTALL_PATH) -isystem. -isystem$(RAYLIB_PATH)/src -isystem$(RAYLIB_PATH)/release/include -isystem$(RAYLIB_PATH)/src/external
+        INCLUDE_PATHS = -I$(RAYLIB_H_INSTALL_PATH) -I/usr/include -isystem. -isystem$(RAYLIB_PATH)/src -isystem$(RAYLIB_PATH)/release/include -isystem$(RAYLIB_PATH)/src/external
     endif
 endif
 
@@ -370,7 +370,7 @@ OBJ_DIR = obj
 # Define all object files from source files
 SRC = $(call rwildcard, *.c, *.h)
 #OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-OBJS ?= main.c
+OBJS ?= src/main.cpp
 
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)
@@ -378,7 +378,7 @@ ifeq ($(PLATFORM),PLATFORM_ANDROID)
     export PROJECT_NAME
     export SRC_DIR
 else
-    MAKEFILE_PARAMS = $(PROJECT_NAME)
+    MAKEFILE_PARAMS = $(OUTPUT_NAME)$(EXT)
 endif
 
 # Default target entry
@@ -387,8 +387,8 @@ all:
 	$(MAKE) $(MAKEFILE_PARAMS)
 
 # Project target defined by PROJECT_NAME
-$(PROJECT_NAME): $(OBJS)
-	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+$(OUTPUT_NAME)$(EXT): $(OBJS)
+	$(CC) -o $(OUTPUT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 
 # Compile source files
 # NOTE: This pattern will compile every module defined on $(OBJS)

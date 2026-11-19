@@ -27,7 +27,7 @@ void log(string msg){
 class world {
     private:
         string name = "Earth";
-        Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
+        Texture2D grass1 = LoadTexture("resources/images/terrain/Grass/grass1.png");
         int tile_scale = 5;
         string world_map = LoadFileText("resources/world/local_world.nxw");
         
@@ -67,7 +67,7 @@ class player {
     private:
         string name = "Kara1";
         string UID = "";
-        Texture2D skin = LoadTexture("resources/images/player/Kara/Kara-walk.png");
+        Texture2D skin = LoadTexture("resources/images/player/Kara/kara-walk.png");
         int anim_frame = 0;
         int facing = -1;
         float location_x = 100;
@@ -212,6 +212,9 @@ int main () {
 
     while (WindowShouldClose() == false){
         framesCounter++;
+        BeginDrawing();
+            ClearBackground(BLUE);
+
         local_world.draw_world();
         local_player.draw_player();
 
@@ -231,9 +234,6 @@ int main () {
         }
 
 
-        BeginDrawing();
-            ClearBackground(BLUE);
-        
         EndDrawing();
     }
 
