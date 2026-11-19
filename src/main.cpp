@@ -27,7 +27,10 @@ void log(string msg){
 class world {
     private:
         string name = "Earth";
-        Texture2D grass1 = LoadTexture("resources/images/terrain/Grass/grass1.png");
+        Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
+        Texture2D grass2 = LoadTexture("resources/images/terrain/grass/grass2.png");
+        Texture2D grass3 = LoadTexture("resources/images/terrain/grass/grass3.png");
+        Texture2D grass4 = LoadTexture("resources/images/terrain/grass/grass4.png");
         int tile_scale = 5;
         string world_map = LoadFileText("resources/world/local_world.nxw");
         
@@ -35,14 +38,36 @@ class world {
 
     public:
     
+    void draw_grass(float x, float y, bool cycle_Reset){
+        static int randomgrass = 1;
+        if (cycle_Reset){
+            randomgrass = 1;
+        }
+        
+        if (randomgrass == 1){
+            DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { x, y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            randomgrass++;
+        } else if (randomgrass == 2){
+            DrawTexturePro(grass2, { 0.0f, 0.0f, (float)grass2.width, (float)grass2.height }, Rectangle { x, y, (float)grass2.width*tile_scale, (float)grass2.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            randomgrass++;
+        } else if (randomgrass == 3){
+            DrawTexturePro(grass3, { 0.0f, 0.0f, (float)grass3.width, (float)grass3.height }, Rectangle { x, y, (float)grass3.width*tile_scale, (float)grass3.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            randomgrass++;
+        } else if (randomgrass == 4){
+            DrawTexturePro(grass4, { 0.0f, 0.0f, (float)grass4.width, (float)grass4.height }, Rectangle { x, y, (float)grass4.width*tile_scale, (float)grass4.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            randomgrass = 1;
+        }
+
+    }
+
     void draw_world(){
         float location_x = 0;
         float location_y = 0;
-        DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { location_x, location_y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+        draw_grass(location_x, location_y, true);
         for (size_t i = 0; i < world_map.length(); ++i) {
             if (world_map[i] == '#'){
                 location_x += grass1.width * tile_scale;
-                DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { location_x, location_y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+                draw_grass(location_x, location_y, false);
             }
             if (world_map[i] == '$'){
                 location_x += grass1.width * tile_scale;
