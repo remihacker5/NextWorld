@@ -23,33 +23,58 @@ void log(string msg){
     cout << "[GAME LOG] - " + msg << endl;
 }
 
+struct WorldRect {
+    float left, right, top, bottom;
+};
 
+WorldRect GetCameraWorldBounds(const Camera2D& camera, int screenWidth, int screenHeight) {
+    // Handle rotation safely by checking all 4 screen corners
+    Vector2 corners[4] = {
+        GetScreenToWorld2D({ 0.0f, 0.0f }, camera),
+        GetScreenToWorld2D({ (float)screenWidth, 0.0f }, camera),
+        GetScreenToWorld2D({ 0.0f, (float)screenHeight }, camera),
+        GetScreenToWorld2D({ (float)screenWidth, (float)screenHeight }, camera)
+    };
 
-void draw_grass(float x, float y, bool cycle_Reset){
+    float minX = corners[0].x, maxX = corners[0].x;
+    float minY = corners[0].y, maxY = corners[0].y;
+
+    for (int i = 1; i < 4; ++i) {
+        minX = std::min(minX, corners[i].x);
+        maxX = std::max(maxX, corners[i].x);
+        minY = std::min(minY, corners[i].y);
+        maxY = std::max(maxY, corners[i].y);
+    }
+
+    return { minX, maxX, minY, maxY };
+}
+
+bool IsInView(const WorldRect& view, float x, float y, float width, float height, float margin = 32.0f) {
+    return (x + width + margin >= view.left) &&
+           (x - margin <= view.right) &&
+           (y + height + margin >= view.top) &&
+           (y - margin <= view.bottom);
+}
+
+void draw_grass(float x, float y, int randomgrass){
     static Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
     static Texture2D grass2 = LoadTexture("resources/images/terrain/grass/grass2.png");
     static Texture2D grass3 = LoadTexture("resources/images/terrain/grass/grass3.png");
     static Texture2D grass4 = LoadTexture("resources/images/terrain/grass/grass4.png");
     static int tile_scale = 5;
     static string world_map = LoadFileText("resources/world/real_world_map.txt");
-    static int randomgrass = 1;
-    
-    if (cycle_Reset){
-        randomgrass = 1;
-    }
     
     if (randomgrass == 1){
         DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { x, y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
-        randomgrass++;
+        
     } else if (randomgrass == 2){
         DrawTexturePro(grass2, { 0.0f, 0.0f, (float)grass2.width, (float)grass2.height }, Rectangle { x, y, (float)grass2.width*tile_scale, (float)grass2.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
-        randomgrass++;
+        
     } else if (randomgrass == 3){
         DrawTexturePro(grass3, { 0.0f, 0.0f, (float)grass3.width, (float)grass3.height }, Rectangle { x, y, (float)grass3.width*tile_scale, (float)grass3.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
-        randomgrass++;
+        
     } else if (randomgrass == 4){
         DrawTexturePro(grass4, { 0.0f, 0.0f, (float)grass4.width, (float)grass4.height }, Rectangle { x, y, (float)grass4.width*tile_scale, (float)grass4.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
-        randomgrass = 1;
     }
 }
 
@@ -188,9 +213,7 @@ int main () {
     Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
     int tile_scale = 5;
     string world_map = LoadFileText("resources/world/real_world_map.txt");
-
-    float target_x = 0;
-    float target_y = 0;
+    int randomgrass = 1;
     player local_player = player();
     Camera2D camera = { 0 };
     camera.target = Vector2{local_player.get_location_x(), local_player.get_location_y()};
@@ -220,27 +243,33 @@ int main () {
         BeginDrawing();
         BeginMode2D(camera);
         ClearBackground(BLUE);
+        WorldRect view = GetCameraWorldBounds(camera, SCREEN_WIDTH, SCREEN_HEIGHT);
+        
 
-
-        float location_x = 0;
-        float location_y = 0;
-        draw_grass(location_x, location_y, true);
+        float location_x = 0.0f;
+        float location_y = 0.0f;
+        draw_grass(location_x, location_y, randomgrass);
         for (size_t i = 0; i < world_map.length(); ++i) {
+            randomgrass++;
+            if (randomgrass > 4){
+                randomgrass = 1;
+            }
             if (world_map[i] == '#'){
                 location_x += grass1.width * tile_scale;
-                draw_grass(location_x, location_y, false);
+                if (IsInView(view, location_x, location_y, grass1.width * tile_scale, grass1.height * tile_scale, 32.0f)) {
+                    draw_grass(location_x, location_y, randomgrass);
+                }
+                
             }
             if (world_map[i] == '\n'){
-            location_x = 0;
+            location_x = 0.0f;
             location_y += grass1.height * tile_scale;
             }
             if (world_map[i] == ' '){
             location_x += grass1.width * tile_scale;
             }            
         }
-
-
-
+        randomgrass = 1;
 
         local_player.draw_player();
 
