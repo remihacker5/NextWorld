@@ -13,21 +13,21 @@
                 "command": "C:/raylib/w64devkit/bin/mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=NextWorld",
+                    "PROJECT_NAME=Rails",
                     "OBJS=src/main.cpp",
                     "BUILD_MODE=DEBUG"
                 ]
             },
             "osx": {
                 "args": [
-                    "PROJECT_NAME=NextWorld",
+                    "PROJECT_NAME=Rails",
                     "OBJS=src/main.cpp",
                     "BUILD_MODE=DEBUG"
                 ]
             },
             "linux": {
                 "args": [
-                    "PROJECT_NAME=NextWorld",
+                    "PROJECT_NAME=Rails",
                     "OBJS=src/main.cpp",
                     "BUILD_MODE=DEBUG"
                 ]
@@ -51,19 +51,19 @@
                 "command": "C:/raylib/w64devkit/bin/mingw32-make.exe",
                 "args": [
                     "RAYLIB_PATH=C:/raylib/raylib",
-                    "PROJECT_NAME=NextWorld",
+                    "PROJECT_NAME=Rails",
                     "OBJS=src/main.cpp"
                 ]
             },
             "osx": {
                 "args": [
-                    "PROJECT_NAME=NextWorld",
+                    "PROJECT_NAME=Rails",
                     "OBJS=src/main.cpp"
                 ]
             },
             "linux": {
                 "args": [
-                    "PROJECT_NAME=NextWorld",
+                    "PROJECT_NAME=Rails",
                     "OBJS=src/main.cpp"
                 ]
             },

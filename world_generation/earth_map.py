@@ -21,8 +21,12 @@ def generate_tif_map(image_path="your_earth_map.tif", target_height=400):
         row = []
         for x in range(target_width):
             pixel_value = img_resized.getpixel((x, y))
-            if pixel_value > 127:
+            if pixel_value > 190:
+                row.append("@")
+            elif pixel_value > 150:
                 row.append("#")
+            elif pixel_value > 127:
+                row.append("%")
             else:
                 row.append(" ")
         map_lines.append("".join(row))

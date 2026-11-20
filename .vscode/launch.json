@@ -5,7 +5,7 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/NextWorld-debug",
+            "program": "${workspaceFolder}/Rails-debug",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -20,7 +20,7 @@
                 }
             ],
             "windows": {
-                "program": "${workspaceFolder}/NextWorld-debug.exe",
+                "program": "${workspaceFolder}/Rails-debug.exe",
                 "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
             },
             "osx": {
@@ -40,10 +40,10 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "program": "${workspaceFolder}/NextWorld",
+            "program": "${workspaceFolder}/Rails",
             "MIMode": "gdb",
             "windows": {
-                "program": "${workspaceFolder}/NextWorld.exe",
+                "program": "${workspaceFolder}/Rails.exe",
                 "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
             },
             "osx": {

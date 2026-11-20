@@ -208,14 +208,16 @@ int main () {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
     int framesCounter = 0;
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "NextWorld - PreAlpha 1");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rails - PreAlpha 1");
     SetWindowIcon(LoadImage("resources/images/menu/icon.png"));
     SetTargetFPS(60);
     log("Screen init SUCCESS");
 
     Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
+    Texture2D sand = LoadTexture("resources/images/terrain/sand/sand.png");
+    Texture2D rock = LoadTexture("resources/images/terrain/rock/rock.png");
     int tile_scale = 5;
-    string world_map = LoadFileText("resources/world/real_world_map1.txt");
+    string world_map = LoadFileText("resources/world/map.txt");
     int randomgrass = 1;
     player local_player = player();
     Camera2D camera = { 0 };
@@ -266,6 +268,20 @@ int main () {
                 location_x += grass1.width * tile_scale;
                 if (IsInView(view, location_x, location_y, grass1.width * tile_scale, grass1.height * tile_scale, 32.0f)) {
                     draw_grass(location_x, location_y, randomgrass);
+                }
+                
+            }
+            if (world_map[i] == '%'){
+                location_x += sand.width * tile_scale;
+                if (IsInView(view, location_x, location_y, sand.width * tile_scale, sand.height * tile_scale, 32.0f)) {
+                    DrawTexturePro(sand, { 0.0f, 0.0f, (float)sand.width, (float)sand.height }, Rectangle { location_x, location_y, (float)sand.width*tile_scale, (float)sand.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+                }
+                
+            }
+            if (world_map[i] == '@'){
+                location_x += rock.width * tile_scale;
+                if (IsInView(view, location_x, location_y, rock.width * tile_scale, rock.height * tile_scale, 32.0f)) {
+                    DrawTexturePro(rock, { 0.0f, 0.0f, (float)rock.width, (float)rock.height }, Rectangle { location_x, location_y, (float)rock.width*tile_scale, (float)rock.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
                 }
                 
             }
