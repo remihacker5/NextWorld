@@ -62,7 +62,7 @@ void draw_grass(float x, float y, int randomgrass){
     static Texture2D grass3 = LoadTexture("resources/images/terrain/grass/grass3.png");
     static Texture2D grass4 = LoadTexture("resources/images/terrain/grass/grass4.png");
     static int tile_scale = 5;
-    static string world_map = LoadFileText("resources/world/real_world_map.txt");
+    static string world_map = LoadFileText("resources/world/map.txt");
     
     if (randomgrass == 1){
         DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { x, y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
