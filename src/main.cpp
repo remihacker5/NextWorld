@@ -56,10 +56,6 @@ bool IsInView(const WorldRect& view, float x, float y, float width, float height
            (y - margin <= view.bottom);
 }
 
-string get_terrain(float x, float y){
-
-
-}
 
 
 void draw_grass(float x, float y, int randomgrass){
