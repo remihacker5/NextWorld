@@ -87,8 +87,8 @@ class player {
         Texture2D skin = LoadTexture("resources/images/player/Kara/kara-walk.png");
         int anim_frame = 0;
         int facing = -1;
-        float location_x = 0.0f;
-        float location_y = 0.0f;
+        float location_x = 5430.0f;
+        float location_y = 2040.0f;
         int move_speed_x = 5;
         int move_speed_y = 5;
         int player_scale = 5;
@@ -137,10 +137,10 @@ class player {
         }
 
         // LOCATION GETTER AND SETTER
-        int get_location_x () {
+        float get_location_x () {
             return location_x;
         }
-        int get_location_y () {
+        float get_location_y () {
             return location_y;
         }
 
@@ -203,16 +203,19 @@ class player {
 
 int main () {
 
-    const int SCREEN_WIDTH = 1280;
-    const int SCREEN_HEIGHT = 720;
+    int SCREEN_WIDTH = 1280;
+    int SCREEN_HEIGHT = 720;
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
     int framesCounter = 0;
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "NextWorld - PreAlpha 1");
+    SetWindowIcon(LoadImage("resources/images/menu/icon.png"));
     SetTargetFPS(60);
     log("Screen init SUCCESS");
 
     Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
     int tile_scale = 5;
-    string world_map = LoadFileText("resources/world/real_world_map.txt");
+    string world_map = LoadFileText("resources/world/real_world_map1.txt");
     int randomgrass = 1;
     player local_player = player();
     Camera2D camera = { 0 };
@@ -239,13 +242,18 @@ int main () {
 
 
     while (WindowShouldClose() == false){
+        if (IsWindowMaximized()){
+            SCREEN_WIDTH = GetScreenWidth();
+            SCREEN_HEIGHT = GetScreenHeight();
+            camera.target = Vector2{local_player.get_location_x(), local_player.get_location_y()};
+            camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
+        }
         framesCounter++;
         BeginDrawing();
         BeginMode2D(camera);
         ClearBackground(BLUE);
         WorldRect view = GetCameraWorldBounds(camera, SCREEN_WIDTH, SCREEN_HEIGHT);
         
-
         float location_x = 0.0f;
         float location_y = 0.0f;
         draw_grass(location_x, location_y, randomgrass);
