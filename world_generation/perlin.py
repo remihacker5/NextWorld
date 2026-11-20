@@ -1,6 +1,10 @@
 import math
 import random
-
+import os
+from pathlib import Path
+# 1. Automatically set working directory to the script's folder
+script_dir = Path(__file__).resolve().parent
+os.chdir(script_dir)
 
 class PerlinNoise2D:
     def __init__(self, seed: int | None = None):
@@ -120,12 +124,12 @@ def generate_map_file(
 if __name__ == "__main__":
     generate_map_file(
         filename="map.txt",
-        width=100,
-        height=100,
+        width=200,
+        height=200,
         scale=18.0,
         octaves=4,
         persistence=0.5,
         lacunarity=2.0,
-        seed=None  # Set to None for a random map each run
+        seed=42  # Set to None for a random map each run
     )
     print("Map generated and saved to map.txt")

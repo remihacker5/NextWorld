@@ -56,6 +56,12 @@ bool IsInView(const WorldRect& view, float x, float y, float width, float height
            (y - margin <= view.bottom);
 }
 
+string get_terrain(float x, float y){
+
+
+}
+
+
 void draw_grass(float x, float y, int randomgrass){
     static Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
     static Texture2D grass2 = LoadTexture("resources/images/terrain/grass/grass2.png");
@@ -216,8 +222,10 @@ int main () {
     Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
     Texture2D sand = LoadTexture("resources/images/terrain/sand/sand.png");
     Texture2D rock = LoadTexture("resources/images/terrain/rock/rock.png");
+    Texture2D rail = LoadTexture("resources/images/item/rail/rail.png");
     int tile_scale = 5;
     string world_map = LoadFileText("resources/world/map.txt");
+    string rail_map = LoadFileText("resources/world/rail_map.txt");
     int randomgrass = 1;
     player local_player = player();
     Camera2D camera = { 0 };
@@ -255,6 +263,18 @@ int main () {
         BeginMode2D(camera);
         ClearBackground(BLUE);
         WorldRect view = GetCameraWorldBounds(camera, SCREEN_WIDTH, SCREEN_HEIGHT);
+        
+
+
+
+
+
+
+
+
+
+
+
         
         float location_x = 0.0f;
         float location_y = 0.0f;
@@ -294,6 +314,36 @@ int main () {
             }            
         }
         randomgrass = 1;
+
+
+
+
+
+        location_x = 0.0f;
+        location_y = 0.0f;
+        for (size_t i = 0; i < rail_map.length(); ++i) {
+
+            if (rail_map[i] == '='){
+                location_x += rail.width * tile_scale;
+                if (IsInView(view, location_x, location_y, rail.width * tile_scale, rail.height * tile_scale, 32.0f)) {
+                    DrawTexturePro(rail, { 0.0f, 0.0f, (float)rail.width, (float)rail.height }, Rectangle { location_x, location_y, (float)rail.width*tile_scale, (float)rail.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+                }
+            }
+            if (rail_map[i] == '\n'){
+            location_x = 0.0f;
+            location_y += rail.height * tile_scale;
+            }
+            if (rail_map[i] == ' '){
+            location_x += rail.width * tile_scale;
+            }            
+        }
+
+
+
+
+
+
+
 
         local_player.draw_player();
 
