@@ -57,30 +57,49 @@ bool IsInView(const WorldRect& view, float x, float y, float width, float height
 }
 
 
-
-void draw_grass(float x, float y, int randomgrass){
-    static Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
-    static Texture2D grass2 = LoadTexture("resources/images/terrain/grass/grass2.png");
-    static Texture2D grass3 = LoadTexture("resources/images/terrain/grass/grass3.png");
-    static Texture2D grass4 = LoadTexture("resources/images/terrain/grass/grass4.png");
-    static int tile_scale = 5;
-    static string world_map = LoadFileText("resources/world/map.txt");
+class terrain {
+    public:
+        void draw_grass(float x, float y, int randomgrass){
+            static Texture2D grass1 = LoadTexture("resources/images/terrain/grass/grass1.png");
+            static Texture2D grass2 = LoadTexture("resources/images/terrain/grass/grass2.png");
+            static Texture2D grass3 = LoadTexture("resources/images/terrain/grass/grass3.png");
+            static Texture2D grass4 = LoadTexture("resources/images/terrain/grass/grass4.png");
+            static int tile_scale = 5;
+            static string world_map = LoadFileText("resources/world/map.txt");
     
-    if (randomgrass == 1){
-        DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { x, y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            if (randomgrass == 1){
+                DrawTexturePro(grass1, { 0.0f, 0.0f, (float)grass1.width, (float)grass1.height }, Rectangle { x, y, (float)grass1.width*tile_scale, (float)grass1.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
         
-    } else if (randomgrass == 2){
-        DrawTexturePro(grass2, { 0.0f, 0.0f, (float)grass2.width, (float)grass2.height }, Rectangle { x, y, (float)grass2.width*tile_scale, (float)grass2.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            } else if (randomgrass == 2){
+                DrawTexturePro(grass2, { 0.0f, 0.0f, (float)grass2.width, (float)grass2.height }, Rectangle { x, y, (float)grass2.width*tile_scale, (float)grass2.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
         
-    } else if (randomgrass == 3){
-        DrawTexturePro(grass3, { 0.0f, 0.0f, (float)grass3.width, (float)grass3.height }, Rectangle { x, y, (float)grass3.width*tile_scale, (float)grass3.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            } else if (randomgrass == 3){
+                DrawTexturePro(grass3, { 0.0f, 0.0f, (float)grass3.width, (float)grass3.height }, Rectangle { x, y, (float)grass3.width*tile_scale, (float)grass3.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
         
-    } else if (randomgrass == 4){
-        DrawTexturePro(grass4, { 0.0f, 0.0f, (float)grass4.width, (float)grass4.height }, Rectangle { x, y, (float)grass4.width*tile_scale, (float)grass4.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
-    }
-}
+            } else if (randomgrass == 4){
+                DrawTexturePro(grass4, { 0.0f, 0.0f, (float)grass4.width, (float)grass4.height }, Rectangle { x, y, (float)grass4.width*tile_scale, (float)grass4.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+            }
+        }
+        void draw_sand(float x, float y){
+            static Texture2D sand = LoadTexture("resources/images/terrain/sand/sand.png");
+            static int tile_scale = 5;
+            DrawTexturePro(sand, { 0.0f, 0.0f, (float)sand.width, (float)sand.height }, Rectangle { x, y, (float)sand.width*tile_scale, (float)sand.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+        }
+        void draw_rock(float x, float y){
+            static Texture2D rock = LoadTexture("resources/images/terrain/rock/rock.png");
+            static int tile_scale = 5;
+            DrawTexturePro(rock, { 0.0f, 0.0f, (float)rock.width, (float)rock.height }, Rectangle { x, y, (float)rock.width*tile_scale, (float)rock.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+        }
+};
 
-
+class railway {
+    public:
+        void draw_rail(float x, float y){
+            static Texture2D rail = LoadTexture("resources/images/item/rail/rail.png");
+            static int tile_scale = 5;
+            DrawTexturePro(rail, { 0.0f, 0.0f, (float)rail.width, (float)rail.height }, Rectangle { x, y, (float)rail.width*tile_scale, (float)rail.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+        }
+};
 
 class player {
     private:
@@ -91,8 +110,8 @@ class player {
         int facing = -1;
         float location_x = 5430.0f;
         float location_y = 2040.0f;
-        int move_speed_x = 5;
-        int move_speed_y = 5;
+        int move_speed_x = 2;
+        int move_speed_y = 2;
         int player_scale = 5;
 
         // MOVE SPEED GETTER AND SETTER
@@ -229,37 +248,26 @@ int main () {
     camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
+    terrain local_terrain = terrain();
+    railway local_railway = railway();
 
-
-
-    /*
-    This is where you would initialize the local player's name and skin.
-
-    cout << "Please Enter your characters name: ";
-    string newname;
-    cin >> newname;
-    local_player.set_name(newname);
-
-    cout << "Please Enter your characters skin (Options are Remi or Kara): ";
-    string newskin;
-    cin >> newskin;
-    local_player.set_skin(newskin);
-    */
 
 
     while (WindowShouldClose() == false){
-        if (IsWindowMaximized()){
+        // Refresh the screen size and camera target if the window is resized
+        if (IsWindowResized()){
             SCREEN_WIDTH = GetScreenWidth();
             SCREEN_HEIGHT = GetScreenHeight();
             camera.target = Vector2{local_player.get_location_x(), local_player.get_location_y()};
             camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
         }
-        framesCounter++;
-        BeginDrawing();
+        framesCounter++; // Increment the frame counter
+        BeginDrawing(); // Start drawing the frame
+
+        // Clear the background and set up the camera
         BeginMode2D(camera);
         ClearBackground(BLUE);
         WorldRect view = GetCameraWorldBounds(camera, SCREEN_WIDTH, SCREEN_HEIGHT);
-        
 
 
 
@@ -271,10 +279,10 @@ int main () {
 
 
 
-        
+
+        // Draw the world map
         float location_x = 0.0f;
         float location_y = 0.0f;
-        draw_grass(location_x, location_y, randomgrass);
         for (size_t i = 0; i < world_map.length(); ++i) {
             randomgrass++;
             if (randomgrass > 4){
@@ -283,23 +291,21 @@ int main () {
             if (world_map[i] == '#'){
                 location_x += grass1.width * tile_scale;
                 if (IsInView(view, location_x, location_y, grass1.width * tile_scale, grass1.height * tile_scale, 32.0f)) {
-                    draw_grass(location_x, location_y, randomgrass);
+                    local_terrain.draw_grass(location_x, location_y, randomgrass);
                 }
                 
             }
             if (world_map[i] == '%'){
                 location_x += sand.width * tile_scale;
                 if (IsInView(view, location_x, location_y, sand.width * tile_scale, sand.height * tile_scale, 32.0f)) {
-                    DrawTexturePro(sand, { 0.0f, 0.0f, (float)sand.width, (float)sand.height }, Rectangle { location_x, location_y, (float)sand.width*tile_scale, (float)sand.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+                    local_terrain.draw_sand(location_x, location_y);
                 }
-                
             }
             if (world_map[i] == '@'){
                 location_x += rock.width * tile_scale;
                 if (IsInView(view, location_x, location_y, rock.width * tile_scale, rock.height * tile_scale, 32.0f)) {
-                    DrawTexturePro(rock, { 0.0f, 0.0f, (float)rock.width, (float)rock.height }, Rectangle { location_x, location_y, (float)rock.width*tile_scale, (float)rock.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+                    local_terrain.draw_rock(location_x, location_y);
                 }
-                
             }
             if (world_map[i] == '\n'){
             location_x = 0.0f;
@@ -314,7 +320,7 @@ int main () {
 
 
 
-
+        // Draw the rail map
         location_x = 0.0f;
         location_y = 0.0f;
         for (size_t i = 0; i < rail_map.length(); ++i) {
@@ -322,7 +328,7 @@ int main () {
             if (rail_map[i] == '='){
                 location_x += rail.width * tile_scale;
                 if (IsInView(view, location_x, location_y, rail.width * tile_scale, rail.height * tile_scale, 32.0f)) {
-                    DrawTexturePro(rail, { 0.0f, 0.0f, (float)rail.width, (float)rail.height }, Rectangle { location_x, location_y, (float)rail.width*tile_scale, (float)rail.height*tile_scale }, Vector2 {0, 0}, 0, WHITE);
+                    local_railway.draw_rail(location_x, location_y);
                 }
             }
             if (rail_map[i] == '\n'){
@@ -341,9 +347,9 @@ int main () {
 
 
 
-        local_player.draw_player();
+        local_player.draw_player(); // Draw the local player character
 
-
+        // Handle player movement based on key inputs
         if (IsKeyDown(KEY_W)) {
             local_player.walk(0, -1);
         }
@@ -359,7 +365,7 @@ int main () {
             local_player.walk(0, 0);
         }
 
-        camera.target = Vector2{local_player.get_location_x(), local_player.get_location_y()};
+        camera.target = Vector2{local_player.get_location_x(), local_player.get_location_y()}; // set the camera target to the player's location
         EndMode2D();
         EndDrawing();
     }
